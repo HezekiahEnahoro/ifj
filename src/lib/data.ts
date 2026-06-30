@@ -90,6 +90,7 @@ export async function writeData(data: PortfolioData): Promise<void> {
   await put(KEY, JSON.stringify(data), {
     access: 'public',
     addRandomSuffix: false,
+    allowOverwrite: true,
     contentType: 'application/json',
   });
 }
