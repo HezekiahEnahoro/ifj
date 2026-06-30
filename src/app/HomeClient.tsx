@@ -241,14 +241,14 @@ export default function HomeClient({
                   </motion.div>
                 ))}
 
-                {/* Photo — drifts through all angles (visits corners where badges sit) */}
+                {/* Photo — big vertical bounce through the hero, badges/rings stay anchored */}
                 <motion.div
                   className="absolute inset-0 flex items-center justify-center"
                   animate={{
-                    x: [0, -10,  0,  10,  6, -6, -10, -4, 0],
-                    y: [0, -12, -18, -10, -4, -8, -14, -4, 0],
+                    x: [0, 6, 0, -6, 0],
+                    y: [0, -110, 0, 110, 0],
                   }}
-                  transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
+                  transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
                 >
                   <motion.div
                     className="relative overflow-hidden blob-morph"
