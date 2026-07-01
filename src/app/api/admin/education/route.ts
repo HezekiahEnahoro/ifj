@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { readData, writeData } from '@/lib/data';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   const data = await readData();
   return NextResponse.json(data.education.sort((a, b) => a.sort_order - b.sort_order));
