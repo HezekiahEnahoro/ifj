@@ -73,11 +73,18 @@ export async function readData(): Promise<PortfolioData> {
   }
   try {
     const { blobs } = await list({ prefix: KEY });
-    if (!blobs.length) return structuredClone(DEFAULT_DATA);
+    if (!blobs.length) {
+      console.error('[readData] list() returned no blobs for prefix:', KEY);
+      return structuredClone(DEFAULT_DATA);
+    }
     const res = await fetch(blobs[0].url, { cache: 'no-store' });
-    if (!res.ok) return structuredClone(DEFAULT_DATA);
+    if (!res.ok) {
+      console.error('[readData] blob fetch failed:', res.status, res.statusText, blobs[0].url);
+      return structuredClone(DEFAULT_DATA);
+    }
     return await res.json();
-  } catch {
+  } catch (e) {
+    console.error('[readData] unexpected error:', e);
     return structuredClone(DEFAULT_DATA);
   }
 }
