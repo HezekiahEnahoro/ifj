@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import { Plus, Trash2, Upload, Save, CheckCircle } from "lucide-react";
+import { Plus, Trash2, Upload, Save, CheckCircle, Sparkles } from "lucide-react";
 import type { Profile, HighlightCard, Skill } from "@/lib/types";
 
 const DEFAULT_HIGHLIGHTS: HighlightCard[] = [
@@ -52,6 +52,7 @@ export default function ProfileAdmin() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [uploading, setUploading] = useState<"photo" | "resume" | null>(null);
+  const [fillingBio, setFillingBio] = useState(false);
   const photoInputRef = useRef<HTMLInputElement>(null);
   const resumeInputRef = useRef<HTMLInputElement>(null);
 
@@ -128,6 +129,18 @@ export default function ProfileAdmin() {
 
   function removeBioParagraph(index: number) {
     setProfile((p) => ({ ...p, bio: p.bio.filter((_, i) => i !== index) }));
+  }
+
+  async function fillBioFromResume() {
+    setFillingBio(true);
+    try {
+      const res = await fetch('/api/admin/fill-bio', { method: 'POST' });
+      const data = await res.json();
+      if (data.error) { alert(data.error); return; }
+      setProfile((p) => ({ ...p, bio: data.bio }));
+    } finally {
+      setFillingBio(false);
+    }
   }
 
   function updateStat(index: number, field: "value" | "label", val: string) {
@@ -313,7 +326,20 @@ export default function ProfileAdmin() {
 
         {/* Bio paragraphs */}
         <div>
-          <label style={labelStyle}>About Me (each box = one paragraph)</label>
+          <div className="flex items-center justify-between mb-1.5">
+            <label style={{ ...labelStyle, marginBottom: 0 }}>About Me (each box = one paragraph)</label>
+            {profile.resume_url && (
+              <button
+                onClick={fillBioFromResume}
+                disabled={fillingBio}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold disabled:opacity-50"
+                style={{ background: "rgba(168,85,247,0.12)", color: "#a855f7", border: "1px solid rgba(168,85,247,0.25)" }}
+              >
+                <Sparkles size={12} />
+                {fillingBio ? "Extracting…" : "Fill bio from resume"}
+              </button>
+            )}
+          </div>
           <div className="space-y-3">
             {profile.bio.map((para, i) => (
               <div key={i} className="flex gap-2">
