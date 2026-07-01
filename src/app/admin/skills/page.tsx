@@ -66,13 +66,31 @@ export default function SkillsAdmin() {
   async function saveEdit(skill: Skill) {
     const updated = { ...skill, ...editDraft };
     setSavingId(skill.id);
-    await fetch("/api/admin/skills", {
+
+    let res = await fetch("/api/admin/skills", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updated),
     });
-    setSkills((prev) => prev.map((s) => (s.id === skill.id ? updated : s)));
+
+    // Retry once — catches CDN cache lag after a rapid add→save
+    if (!res.ok) {
+      await new Promise((r) => setTimeout(r, 800));
+      res = await fetch("/api/admin/skills", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updated),
+      });
+    }
+
     setSavingId(null);
+
+    if (!res.ok) {
+      alert("Save failed — please try again.");
+      return;
+    }
+
+    setSkills((prev) => prev.map((s) => (s.id === skill.id ? updated : s)));
     setSavedIds((prev) => new Set([...prev, skill.id]));
     setTimeout(() => setSavedIds((prev) => { const s = new Set(prev); s.delete(skill.id); return s; }), 1500);
     setEditingId(null);

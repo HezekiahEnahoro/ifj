@@ -77,7 +77,7 @@ export async function readData(): Promise<PortfolioData> {
       console.error('[readData] list() returned no blobs for prefix:', KEY);
       return structuredClone(DEFAULT_DATA);
     }
-    const res = await fetch(blobs[0].url, { cache: 'no-store' });
+    const res = await fetch(`${blobs[0].url}?_=${Date.now()}`, { cache: 'no-store' });
     if (!res.ok) {
       console.error('[readData] blob fetch failed:', res.status, res.statusText, blobs[0].url);
       return structuredClone(DEFAULT_DATA);
