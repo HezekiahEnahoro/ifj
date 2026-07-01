@@ -1,6 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { put, list } from '@vercel/blob';
+import { unstable_noStore as noStore } from 'next/cache';
 import type { Profile, Project, Skill, Experience, Education } from './types';
 
 const IS_LOCAL = !process.env.BLOB_READ_WRITE_TOKEN;
@@ -64,6 +65,7 @@ const DEFAULT_DATA: PortfolioData = {
 };
 
 export async function readData(): Promise<PortfolioData> {
+  noStore();
   if (IS_LOCAL) {
     try {
       return JSON.parse(await fs.readFile(LOCAL_FILE, 'utf-8'));
@@ -77,7 +79,10 @@ export async function readData(): Promise<PortfolioData> {
       console.error('[readData] list() returned no blobs for prefix:', KEY);
       return structuredClone(DEFAULT_DATA);
     }
-    const res = await fetch(`${blobs[0].url}?_=${Date.now()}`, { cache: 'no-store' });
+    const res = await fetch(`${blobs[0].url}?_=${Date.now()}`, {
+      cache: 'no-store',
+      headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' },
+    });
     if (!res.ok) {
       console.error('[readData] blob fetch failed:', res.status, res.statusText, blobs[0].url);
       return structuredClone(DEFAULT_DATA);
