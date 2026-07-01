@@ -269,6 +269,12 @@ export default function ProfileAdmin() {
               <p className="text-xs mt-1.5" style={{ color: "#475569" }}>
                 JPG, PNG, WebP — max 5MB
               </p>
+              <input
+                style={{ ...fieldStyle, marginTop: "0.5rem", width: "100%", fontSize: "0.75rem" }}
+                value={profile.photo_url ?? ""}
+                onChange={(e) => setProfile((p) => ({ ...p, photo_url: e.target.value || null }))}
+                placeholder="Or paste a photo URL"
+              />
             </div>
           </div>
         </div>
