@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import ClientWrapper from "@/components/ClientWrapper";
 import { readData } from "@/lib/data";
+import type { Profile } from "@/lib/types";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { profile } = await readData();
@@ -58,15 +59,17 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { profile } = await readData();
+
   return (
     <html lang="en" className="scroll-smooth">
       <body>
-        <ClientWrapper>{children}</ClientWrapper>
+        <ClientWrapper profile={profile}>{children}</ClientWrapper>
       </body>
     </html>
   );

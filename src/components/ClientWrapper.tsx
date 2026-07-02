@@ -1,7 +1,6 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import ScrollProgress from "./ScrollProgress";
@@ -15,20 +14,15 @@ function getInitials(name: string, logoText: string | null): string {
   return name.trim().split(/\s+/).map((w) => w[0]).slice(0, 2).join("").toUpperCase();
 }
 
-export default function ClientWrapper({ children }: { children: React.ReactNode }) {
+export default function ClientWrapper({
+  children,
+  profile,
+}: {
+  children: React.ReactNode;
+  profile: Profile;
+}) {
   const pathname = usePathname();
   const isAdmin = pathname?.startsWith("/admin");
-  const [profile, setProfile] = useState<Profile | null>(null);
-
-  useEffect(() => {
-    if (isAdmin) return;
-    fetch("/api/admin/profile")
-      .then((r) => r.json())
-      .then((p) => {
-        if (p && !p.error) setProfile(p);
-      })
-      .catch(() => {});
-  }, [isAdmin]);
 
   if (isAdmin) {
     return <>{children}</>;
