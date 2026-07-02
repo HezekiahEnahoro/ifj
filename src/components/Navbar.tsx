@@ -54,8 +54,8 @@ export default function Navbar({ logoText }: { logoText?: string }) {
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.96 }}
             >
-              {logoText || "JD"}
-              <span style={{ color: "var(--cyan)" }}>.</span>
+              {logoText || "···"}
+              {logoText && <span style={{ color: "var(--cyan)" }}>.</span>}
             </motion.span>
           </Link>
 

@@ -11,7 +11,7 @@ import type { Profile } from "@/lib/types";
 
 function getInitials(name: string, logoText: string | null): string {
   if (logoText) return logoText;
-  if (!name) return "JD";
+  if (!name) return "";
   return name.trim().split(/\s+/).map((w) => w[0]).slice(0, 2).join("").toUpperCase();
 }
 
