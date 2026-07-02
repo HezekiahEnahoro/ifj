@@ -14,6 +14,14 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'No file provided' }, { status: 400 });
   }
 
+  const ALLOWED_TYPES = new Set([
+    'image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml',
+    'application/pdf',
+  ]);
+  if (!ALLOWED_TYPES.has(file.type)) {
+    return NextResponse.json({ error: 'File type not allowed.' }, { status: 400 });
+  }
+
   const ext = file.name.split('.').pop();
   const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
 
